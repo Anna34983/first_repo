@@ -12,6 +12,9 @@
 
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
 
 df = pd.read_csv('diabetes.csv')
 print(df)
@@ -47,4 +50,33 @@ print(df.describe().T.to_string())
 print(df.isna().sum()) # suma pustych pol
           
 # df.to_csv(r'..\cukrzyca.csv')
-df.to_csv('cukrzyca.csv')    
+# df.to_csv(r'..\cukrzyca.csv')
+# df.to_csv('cukrzyca.csv',sep=';', index=False) # rozdzielamy dane separatorem ";"
+
+### REGRESJA LOGISTYCZNA - ML
+
+#print(df.iloc[ 2:4 , 4:6 ])
+
+X = df.iloc[ : , : -1 ]  # wszystkie wiersze i kolumny bez ostatniej kolumny
+y = df.outcome # bierzemy kolumnę outcome, jeżeli zmieni się nazwa kolumny będzie problem
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+model = LogisticRegression()
+model.fit(X_test, y_test)
+print(f'dokladnosc modelu {model.score(X_test, y_test)}')
+print(pd.DataFrame(confusion_matrix(y_test, model.predict(X_test))))
+
+print('sprawdzmy, czy klasy zbalansowane')
+print(df.outcome.value_counts())
+
+print('zmiana danych')
+df1 = df.query('outcome==0').sample(n=500)
+df2 = df.query('outcome==1').sample(n=500)
+df3 = pd.concat([df1, df2]) #łączenie ramrk danych
+
+X = df3.iloc[ : , : -1 ]  # wszystkie wiersze i kolumny bez ostatniej kolumny
+y = df3.outcome # bierzemy kolumnę outcome, jeżeli zmieni się nazwa kolumny będzie problem
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+model = LogisticRegression()
+model.fit(X_test, y_test)
+print(f'dokladnosc modelu {model.score(X_test, y_test)}')
+print(pd.DataFrame(confusion_matrix(y_test, model.predict(X_test))))
