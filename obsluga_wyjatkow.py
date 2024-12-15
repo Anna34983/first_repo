@@ -1,9 +1,10 @@
-data = input('Wprowadz dana: ')
+data = input('Wprowadź daną:   ')
 try:
     data = int(data)
     print(f'{data} jest intem\n{type(data)}')
 except:
-    data = float(data)
-    print(f'{data} jest floatem\n{type(data)}')
-except:
-    print(f'{data} jest stringiem\n{type(data)}')
+    try:
+        data = float(data)
+        print(f'{data} jest floatem\n{type(data)}')
+    except:
+        print(f'{data} jest stringiem\n{type(data)}')
