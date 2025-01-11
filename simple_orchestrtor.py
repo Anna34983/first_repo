@@ -1,6 +1,7 @@
 from typing import Dict
 from enum import Enum
 from datetime import datetime
+import asyncio
 
 # Definicja statusów zadań
 class TaskStatus(Enum):
@@ -32,12 +33,32 @@ class SimlpeOrchestrator:
         # Zbiór zadań aktualnie przetwarzanych
         self.processing_tasks: set = set()
 
-    def add_task(self, task_id: str, data: Dict, priority: TaskPriority = TaskPriority.MEDIUM):
-        task = Task(task_id, data, priority)
-        self.tasks[task_id] = task
+    async def add_task(self, task_id: str, data: Dict, priority: TaskPriority = TaskPriority.MEDIUM):
+        """
+        Dodaje nowe zadanie do orkiestratora.
+        Zadania są dodawane do słownika i czekają na przetworzenie.
+        """
+        task = Task(task_id, data, priority)        # Tworzymu instancję klasy Task z zadaniem
+        self.tasks[task_id] = task                  # Dodajemy zadanie do słownika
         print(f"Dodano zadanie: {task_id} z priorytetem {priority.name}")
-        return task_id
+        return task_id                              # Zwracamy task_id
+
+
+# Metoda asynchroniczna main
+async def main():
+    orchestrator = SimlpeOrchestrator()         # Tworzymy orkiestrator
+
+    task_id = await orchestrator.add_task(      # Dodajemy statyczne dane do zadania
+        "task1",
+        {
+            "station_id": "STATION001",
+            "temperature": 32.5,
+            "humanity": 80
+         },
+        TaskPriority.HIGH
+    )
+
+
 
 if __name__ == "__main__":
-    orchestrator = SimlpeOrchestrator()
-    orchestrator.add_task("test", {"pole1": "ala"})
+    asyncio.run(main())
