@@ -46,7 +46,41 @@ class SimlpeOrchestrator:
     async def process_tasks(self):
         while True:
             pending_tasks = self._get_peding_tasks()    # Pobranie listy z taskami ze statusem PENDING
-            print(pending_tasks)
+
+            for task in pending_tasks:                          # Przetworzenie listy z taskami
+                if task.task_id not in self.processing_tasks:   # Sprawdzenie czy dany task nie znajduje się w rzetwarzanym zbiorze
+                    self.processing_tasks.add(task.task_id)     # Dodanie task_id do zbioru przetwarzanych tasków
+                    await self._process_single_task(task)       # Uruchomienie przetwarzania taska
+
+    async def _process_single_task(self, task: Task):                   # Metoda przetwarzająca zadanie
+        try:
+            print(f"Rozpoczynam przetwarzanie zadania: {task.task_id}")
+            task.status = TaskStatus.PROCESSING                             # Ustawienie statusu
+
+            measurment = task.data
+            if measurment.get("temperature") > 30:                       # Logika biznesowa - sprawdzenie temp
+                print(f"Wykryto wysoką temperaturę: {measurment['temperature']} 'C")    # Ale może być dodanie do bazy danych
+            await asyncio.sleep(2)
+
+            task.status = TaskStatus.COMPLETING                             # Zakończenie przetwarzania i ustawienie statusu na COMPLETING
+            print(f"Zakończono przetwarzanie zadania: {task.task_id}")
+
+            self.processing_tasks.remove(task.task_id)                      # Usunięcie z zbioru przetwarzanych tasków
+        except Exception as e:
+            task.status = TaskStatus.FAILED
+            task.error = str(e)
+            print(f"Błąd podczas przetwarzania zadania {task.task_id}: {e}")
+
+    def get_task_status(self, task_id: str) -> Dict:
+        task = self.tasks.get(task_id)
+
+        return {
+            "task_id": task.task_id,
+            "status": task.status.name,
+            "priority": task.priority.name,
+            "created_at": task.created_at,
+            "error": task.error
+        }
 
     def _get_peding_tasks(self) -> List[Task]:
         pending_task = []                               # Pusta lista na początek
@@ -76,6 +110,13 @@ async def main():
          },
         TaskPriority.HIGH
     )
+
+    print(orchestrator.get_task_status(task_id))
+    await asyncio.sleep(1)
+    print(orchestrator.get_task_status(task_id))
+    await asyncio.sleep(2)
+    print(orchestrator.get_task_status(task_id))
+
 
 
 
