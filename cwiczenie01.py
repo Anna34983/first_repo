@@ -10,8 +10,8 @@ app = FastAPI() # tworzymy fastAPI
 def get_kalkulator_simple():
     return {
         "skladnik1": int(random.uniform(15,25)),
-        "skladnik2": int(random.uniform(1,15)),
-        "suma": skladnik1+skladnik2
+        "skladnik2": int(random.uniform(1,15))
+        # "suma": skladnik1+skladnik2
     }
 
 if __name__ == "__main__":
