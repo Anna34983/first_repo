@@ -1,0 +1,9 @@
+branch-defaults:
+  master:
+    environment: Cicd-env
+global:
+  application_name: cicd
+  default_region: eu-central-1
+  default_platform: Python 3.13
+  default_ec2_keyname: null
+  sc: git
