@@ -26,7 +26,7 @@ def akcje():
 
         st.stop()  # zatrzymuje dalsze ładowanie aplikacji
 
-    # Przycisk wylogowania i odświeżania
+    # Przyciski wylogowania i odświeżania danych
     if st.session_state.get("logged_in", False):
         _, col1, col2 = st.columns([3, 1, 1])
         with col1:

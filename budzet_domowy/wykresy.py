@@ -1,6 +1,17 @@
-import matplotlib.pyplot as plt
 import streamlit as st
+import matplotlib.pyplot as plt
 import pandas as pd
+
+def wybor_miesiaca(df, key="sb_miesiac"):
+    df = df.copy()
+    df["data"] = pd.to_datetime(df["data"])
+    df["rok_miesiac"] = df["data"].dt.to_period("M").astype(str) # dodanie kolumny RRRR-MM
+    # Lista miesięcy do wyboru + opcja "Wszystko"
+    miesiace = sorted(df["rok_miesiac"].unique(), reverse=True)
+    opcje = ["Wszystko"] + miesiace
+    # Selectbox na wybór miesiąca
+    wybor = st.selectbox("Wybierz miesiąc:", opcje, key=key)
+    return wybor
 
 def wykres_kat_kolowy(df):
     data = df[df["kwota"] < 0].groupby("kategoria")["kwota"].sum().abs()
@@ -11,6 +22,17 @@ def wykres_kat_kolowy(df):
     ax.pie(data, labels=data.index, autopct="%1.1f%%")
     ax.axis("equal")
     st.pyplot(fig)
+
+def wybor_roku_kategorii(df):
+    # Lista wyboru roku, kategorii + opcja "Wszystko"
+    lata = sorted(df["data"].dt.year.unique())
+    # Selectbox na wybór roku
+    rok = st.selectbox("Wybierz rok:", lata, index=len(lata)-1)
+    kategorie = sorted([kat for kat in df["kategoria"].unique() if kat != "Przychód"])
+    kategorie_opcje = ["Wszystko"] + kategorie
+    # Selectbox na kategorię
+    wybrana_kategoria = st.selectbox("Wybierz kategorię wydatków:", kategorie_opcje)
+    return rok, wybrana_kategoria
     
 def wykres_rok_kat_slupkowy(df, rok, wybrana_kategoria):
     df = df.copy()
@@ -40,7 +62,7 @@ def wykres_rok_kat_slupkowy(df, rok, wybrana_kategoria):
         grouped = grouped.reindex(index=range(1, 13), fill_value=0)
         title = f"Wydatki: {wybrana_kategoria} wg miesięcy"
         fig, ax = plt.subplots()
-        grouped.plot(kind="bar", ax=ax, color="tab:blue")
+        grouped.plot(kind="bar", ax=ax, color="tab:green")
 
     ax.set_title(title)
     ax.set_ylabel("Suma wydatków [zł]")

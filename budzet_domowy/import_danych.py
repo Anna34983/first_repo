@@ -5,8 +5,6 @@ wymagane_kol = {"data", "opis", "kwota", "kategoria"}
 wymagane_kat = ["Rachunki", "Kredyt", "Jedzenie", "Ubrania", "Auto", "Rozrywka", "Inne", "Przychód"]
 
 def import_danych(insert_transaction_fn):
-    st.markdown("<h2 style='text-decoration: underline;'>Import danych", unsafe_allow_html=True)
-    st.markdown("<p>Możliwość importu transakcji za pomocą pliku <b>.csv</b> lub <b>.xlsx</b>. </br> *<i> Wymagane kolumny: data, opis, kwota, kategoria. </br>**<i> Dostępne kategorie: Rachunki, Kredyt, Jedzenie, Ubrania, Auto, Rozrywka, Inne, Przychód</i></p>",unsafe_allow_html=True)
     
     uploaded_file = st.file_uploader(
         label="Dodaj transakcje za pomocą pliku .csv lub .xlsx",
