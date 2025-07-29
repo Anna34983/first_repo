@@ -6,7 +6,6 @@ PASSWORD = "wsb2025"
 
 def akcje():
     # Formularz logowania
-
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
 
@@ -16,10 +15,9 @@ def akcje():
         password = st.text_input("Hasło", type="password")
         login_btn = st.button("🔐Zaloguj")
 
-        if login_btn:
+        if login_btn:   # weryfikuje poprawność danych wprowadzonych przez użytkownika
             if username == USERNAME and password == PASSWORD:
                 st.session_state.logged_in = True
-                st.success("✅ Zalogowano pomyślnie")
                 st.rerun()
             else:
                 st.error("❌ Nieprawidłowa nazwa użytkownika lub hasło")

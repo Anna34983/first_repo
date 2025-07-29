@@ -31,20 +31,25 @@ with coll2:
     naglowek("Podsumowanie finansowe", podkreslenie=True)
     st.markdown("<p>*<i> Po dodaniu transakcji należy odświeżyć dane</i></p>",unsafe_allow_html=True)
     wybor = st.selectbox("Wybierz miesiąc:", opcje, key="sb_podsumowanie")
+    
     if wybor != "Wszystko":
         df = df[df["rok_miesiac"] == wybor]
     przychody = df[df['kwota'] > 0]['kwota'].sum()
     wydatki = df[df['kwota'] < 0]['kwota'].sum()
     saldo = df['kwota'].sum()
+    
     if not df.empty:
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Suma przychodów", f"{przychody:.2f} zł")
-            col2.metric("Suma wydatków", f"{wydatki:.2f} zł")
-            if saldo >= 0:
-                col3.metric("Saldo / Oszczędności", f"{saldo:.2f} zł", delta="👍", delta_color="normal")
-            else:
-                col3.metric("Saldo / Zadłużenie", f"{saldo:.2f} zł", delta="👎", delta_color="inverse")
-
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Suma przychodów", f"{przychody:.2f} zł")
+        col2.metric("Suma wydatków", f"{wydatki:.2f} zł")
+        if saldo >= 0:
+            col3.metric("Saldo / Oszczędności", f"{saldo:.2f} zł", delta="👍", delta_color="normal")
+        else:
+            col3.metric("Saldo / Zadłużenie", f"{saldo:.2f} zł", delta="👎", delta_color="inverse")
+    
+    if df.empty:
+        st.info("Brak danych do wyświetlenia.")
+    
 # Panel główny
 linia_pozioma()
 
@@ -57,7 +62,7 @@ with ca1:
     typ = st.radio("Typ transakcji", ["Przychód", "Wydatek"], horizontal=True, key="typ_transakcji")
     data = st.date_input("Data")
     opis = st.text_input("Opis")
-    kwota = st.number_input("Kwota", min_value=0.0, format="%.2f")
+    kwota = st.number_input("Kwota", min_value=0.0, step=1.0, format="%.2f")
 
     # Dynamiczne pole kategorii
     if typ == "Wydatek":

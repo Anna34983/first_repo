@@ -16,7 +16,7 @@ def wybor_miesiaca(df, key="sb_miesiac"):
 def wykres_kat_kolowy(df):
     data = df[df["kwota"] < 0].groupby("kategoria")["kwota"].sum().abs()
     if data.empty:
-        st.info("Brak danych o wydatkach.")
+        st.info("Brak danych do wyświetlenia.")
         return
     fig, ax = plt.subplots()
     ax.pie(data, labels=data.index, autopct="%1.1f%%")
@@ -24,7 +24,6 @@ def wykres_kat_kolowy(df):
     st.pyplot(fig)
 
 def wybor_roku_kategorii(df):
-    # Lista wyboru roku, kategorii + opcja "Wszystko"
     lata = sorted(df["data"].dt.year.unique())
     # Selectbox na wybór roku
     rok = st.selectbox("Wybierz rok:", lata, index=len(lata)-1)
@@ -44,7 +43,7 @@ def wykres_rok_kat_slupkowy(df, rok, wybrana_kategoria):
         df_wyd = df_wyd[df_wyd["kategoria"] == wybrana_kategoria]
 
     if df_wyd.empty:
-        st.info("Brak wydatków do wyświetlenia.")
+        st.info("Brak danych do wyświetlenia.")
         return
 
     # Dodanie miesiąca
